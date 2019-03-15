@@ -58,17 +58,24 @@ def review_totals(file)
   end
 end
 
+def display_help()
+  puts "Type in the name of the task you're working on and a timer will start."
+  puts "Time spent on this activity will be tracked. Feel free to 'pause' at"
+  puts "any time. You can also 'review' time spent so far. Type 'exit' to quit"
+  puts "the program."
+end
+
 file = open_file()
+display_help()
 input = take_input("What are you currently working on?")
 current = nil
+has_current = false
 while input != 'exit'
   if current == nil
     current = input
   elsif input == current
     puts "You are already working on #{current}."
-  end
-
-  if input == 'pause'
+  elsif input == 'pause'
     end_current_task(file, current) unless current == 'review' || current == 'pause'
     puts "If you would like to resume, press enter."
     temp = gets
