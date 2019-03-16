@@ -10,8 +10,8 @@
 require 'yaml'
 require 'pry'
 
-def take_input(message) #Look into default arg here
-  puts message
+def take_input() #Look into default arg here
+  puts "What are you currently working on?"
   input = gets.chomp
 end
 
@@ -47,7 +47,6 @@ end
 def review_totals(file)
   file.each do |key, value|
     unless key == :established
-      binding.pry
       total_time = value[:total]
       hours = total_time.to_int / 3600
       total_time -= hours * 3600
@@ -59,36 +58,58 @@ def review_totals(file)
 end
 
 def display_help()
-  puts "Type in the name of the task you're working on and a timer will start."
+  puts "\nType in the name of the task you're working on and a timer will start."
   puts "Time spent on this activity will be tracked. Feel free to 'pause' at"
   puts "any time. You can also 'review' time spent so far. Type 'exit' to quit"
-  puts "the program."
+  puts "the program.\n"
+end
+
+def reset_log()
+  file = YAML.load_file('template.yml')
+  file[:established] = Time.now
+  file
 end
 
 file = open_file()
 display_help()
-input = take_input("What are you currently working on?")
-current = nil
+input = take_input()
+current = ""
 has_current = false
 while input != 'exit'
-  if current == nil
-    current = input
-  elsif input == current
+  if input == current
     puts "You are already working on #{current}."
+    input = take_input()
+    next
   elsif input == 'pause'
-    end_current_task(file, current) unless current == 'review' || current == 'pause'
+    end_current_task(file, current) if has_current
     puts "If you would like to resume, press enter."
     temp = gets
   elsif input == 'review'
-    end_current_task(file, current) unless current == 'review' || current == 'pause'
+    end_current_task(file, current) if has_current
+    has_current = false
+    current = input
     review_totals(file)
+    input = take_input()
+    next
+  elsif input == 'help'
+    display_help()
+    has_current = false
+    current = input
+    input = take_input()
+    next
+  elsif input == 'reset'
+    file = reset_log()
+    has_current = false
+    current = input
+    input = take_input()
     next
   else
-    end_current_task(file, current) unless current == 'review' || current == 'pause'
+    end_current_task(file, current) if has_current
     current = input
+    has_current = true
   end
-  begin_new_task(file, current) unless current == 'review' || current == 'pause'
-  input = take_input("Let me know what you work on after #{current}.")
+  begin_new_task(file, current) if has_current
+  input = take_input() if has_current
 end
-end_current_task(file, current) unless current == 'review' || current == 'pause'
+end_current_task(file, current) if has_current
 File.write('log.yml', file.to_yaml)
