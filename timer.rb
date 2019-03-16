@@ -10,8 +10,8 @@
 require 'yaml'
 require 'pry'
 
-def take_input() #Look into default arg here
-  puts "What are you currently working on?"
+def take_input(message = "What are you currently working on?") #Look into default arg here
+  puts message
   input = gets.chomp
 end
 
@@ -52,7 +52,7 @@ def review_totals(file)
       total_time -= hours * 3600
       minutes = total_time.to_int / 60
       total_time -= minutes * 60
-      puts "You've worked on #{key} for #{hours} hours, #{minutes} minutes, and #{total_time} seconds."
+      puts "You've worked on #{key} for #{hours} hours, #{minutes} minutes, and #{total_time.to_int} seconds."
     end
   end
 end
@@ -109,7 +109,7 @@ while input != 'exit'
     has_current = true
   end
   begin_new_task(file, current) if has_current
-  input = take_input() if has_current
+  input = take_input("Let me know what you decide to work on after #{current}.") if has_current
 end
 end_current_task(file, current) if has_current
 File.write('log.yml', file.to_yaml)
