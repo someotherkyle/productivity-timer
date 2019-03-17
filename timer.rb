@@ -10,7 +10,7 @@
 require 'yaml'
 require 'pry'
 
-def take_input(message = "What are you currently working on?") #Look into default arg here
+def take_input(message = "What are you currently working on?")
   puts message
   input = gets.chomp
 end
@@ -64,7 +64,12 @@ def display_help()
   puts "the program.\n"
 end
 
-def reset_log()
+def reset_log(file)
+  i = 0
+  while File.file?("log#{i}.yml")
+    i += 1
+  end
+  File.write("log#{i}.yml", file.to_yaml)
   file = YAML.load_file('template.yml')
   file[:established] = Time.now
   file
@@ -98,7 +103,7 @@ while input != 'exit'
     input = take_input()
     next
   elsif input == 'reset'
-    file = reset_log()
+    file = reset_log(file)
     has_current = false
     current = input
     input = take_input()
