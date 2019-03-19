@@ -6,8 +6,10 @@ To be added:
 
 Further bug hunting
 
-Functionality to save logs on reset as log1.yml log2.yml etc.
+Functionality to save logs on reset as log1.yml log2.yml etc. -- Done!
 
-Ability to close the app while time is being tracked and reopen the app to stop timing
+Time breakdown analysis (Percents, Bar graphs)
+
+Maybe - Ability to close the app while time is being tracked and reopen the app to stop timing 
 
 Maybe - Autoreset each week
