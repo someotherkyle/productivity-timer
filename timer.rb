@@ -1,7 +1,7 @@
 # A lightweight CLI productivty timer
 # Author: Kyle Smith
 # Version: 1.0
-# A user should be able to type in an activity and a timer will begin 
+# A user should be able to type in an activity and a timer will begin
 # tracking time spent on that activity.
 # 'exit' will exit 'pause' will temporarily stop the timer and 'review'
 # will output time tracked
@@ -45,8 +45,11 @@ def begin_new_task(file, current)
 end
 
 def review_totals(file)
+  puts "Since #{file[:established]}:\n";
+  grand_total = 0
   file.each do |key, value|
     unless key == :established
+      grand_total += value[:total]
       total_time = value[:total]
       hours = total_time.to_int / 3600
       total_time -= hours * 3600
@@ -55,6 +58,11 @@ def review_totals(file)
       puts "You've worked on #{key} for #{hours} hours, #{minutes} minutes, and #{total_time.to_int} seconds."
     end
   end
+  hours = grand_total.to_int / 3600
+  grand_total -= hours * 3600
+  minutes = grand_total.to_int / 60
+  grand_total -= minutes * 60
+  puts "In total, you've worked for #{hours} hours, #{minutes} minutes, and #{grand_total.to_int} seconds."
 end
 
 def display_help()
@@ -108,6 +116,9 @@ while input != 'exit'
     current = input
     input = take_input()
     next
+  elsif input == 'quit'
+    end_current_task(file, current) if has_current
+    break
   else
     end_current_task(file, current) if has_current
     current = input
